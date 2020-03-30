@@ -1,0 +1,13 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 0e5faac7..a4696b98 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -11,6 +11,8 @@ set(Libxc_LICENSE      "Mozilla Public License, version 2.0 (MPL-2.0)")
+ cmake_minimum_required(VERSION 3.0)
+ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+ 
++cmake_policy(SET CMP0022 NEW)
++
+ ################################### Options ####################################
+ include(psi4OptionsTools)
+ option_with_default(CMAKE_BUILD_TYPE "Build type" Release)
