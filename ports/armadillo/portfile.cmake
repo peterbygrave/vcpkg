@@ -9,7 +9,8 @@ vcpkg_from_gitlab(
     HEAD_REF 9.400.x
     PATCHES
         remove_custom_modules.patch
-		fix-CMakePath.patch
+        fix-CMakePath.patch
+        add-disable-find-package.patch
 )
 
 file(REMOVE ${SOURCE_PATH}/cmake_aux/Modules/ARMA_FindBLAS.cmake)
@@ -28,6 +29,12 @@ vcpkg_configure_cmake(
     OPTIONS
         -DDETECT_HDF5=false
         ${FEATURE_OPTIONS}
+        -DCMAKE_DISABLE_FIND_PACKAGE_SuperLU=ON
+        -DCMAKE_DISABLE_FIND_PACKAGE_ACML=ON
+        -DCMAKE_DISABLE_FIND_PACKAGE_ACMLMP=ON
+        -DCMAKE_DISABLE_FIND_PACKAGE_ARPACK=ON
+        -DCMAKE_DISABLE_FIND_PACKAGE_ATLAS=ON
+        -DCMAKE_DISABLE_FIND_PACKAGE_MKL=ON
 )
 
 vcpkg_install_cmake()

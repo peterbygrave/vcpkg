@@ -41,6 +41,7 @@ function(vcpkg_build_cmake)
 
     if(_VCPKG_CMAKE_GENERATOR MATCHES "Ninja")
         set(BUILD_ARGS "-v") # verbose output
+        set(PARALLEL_ARG "-j${VCPKG_CONCURRENCY}")
         set(NO_PARALLEL_ARG "-j1")
     elseif(_VCPKG_CMAKE_GENERATOR MATCHES "Visual Studio")
         set(BUILD_ARGS
@@ -75,9 +76,9 @@ function(vcpkg_build_cmake)
             if(_bc_ADD_BIN_TO_PATH)
                 set(_BACKUP_ENV_PATH "$ENV{PATH}")
                 if(BUILDTYPE STREQUAL "debug")
-                    vcpkg_add_to_path(PREPEND "${CURRENT_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug/bin")
+                    vcpkg_add_to_path(PREPEND "${CURRENT_INSTALLED_DIR}/debug/bin")
                 else()
-                    vcpkg_add_to_path(PREPEND "${CURRENT_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/bin")
+                    vcpkg_add_to_path(PREPEND "${CURRENT_INSTALLED_DIR}/bin")
                 endif()
             endif()
 
