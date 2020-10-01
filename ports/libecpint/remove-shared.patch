@@ -1,0 +1,13 @@
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 0636c93..d865b72 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -19,7 +19,7 @@ add_custom_command(
+ 
+ file(GLOB_RECURSE LIB_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/lib/*.cpp")
+ 
+-add_library(ecpint SHARED
++add_library(ecpint
+        ${LIB_SOURCES}
+        ${GENERATED_SOURCES}
+ )

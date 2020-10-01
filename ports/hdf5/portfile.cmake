@@ -25,6 +25,7 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
      cpp          HDF5_BUILD_CPP_LIB
      szip         HDF5_ENABLE_SZIP_SUPPORT
      szip         HDF5_ENABLE_SZIP_ENCODING
+     szip         HDF5_PACKAGE_EXTLIBS
      zlib         HDF5_ENABLE_Z_LIB_SUPPORT
 )
 
