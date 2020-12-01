@@ -51,6 +51,9 @@
 ## ### OPTIONS_DEBUG
 ## Additional options passed to CMake during the Debug configuration. These are in addition to `OPTIONS`.
 ##
+## ### LOGNAME
+## Name of the log to write the output of the configure call to.
+##
 ## ## Notes
 ## This command supplies many common arguments to CMake. To see the full list, examine the source.
 ##
@@ -64,13 +67,17 @@ function(vcpkg_configure_cmake)
     # parse parameters such that semicolons in arguments to OPTIONS don't get erased
     cmake_parse_arguments(PARSE_ARGV 0 _csc
         "PREFER_NINJA;DISABLE_PARALLEL_CONFIGURE;NO_CHARSET_FLAG"
-        "SOURCE_PATH;GENERATOR"
+        "SOURCE_PATH;GENERATOR;LOGNAME"
         "OPTIONS;OPTIONS_DEBUG;OPTIONS_RELEASE"
     )
 
     if(NOT VCPKG_PLATFORM_TOOLSET)
         message(FATAL_ERROR "Vcpkg has been updated with VS2017 support; "
             "however, vcpkg.exe must be rebuilt by re-running bootstrap-vcpkg.bat\n")
+    endif()
+
+    if(NOT _csc_LOGNAME)
+        set(_csc_LOGNAME config-${TARGET_TRIPLET})
     endif()
 
     if(CMAKE_HOST_WIN32)
@@ -163,6 +170,8 @@ function(vcpkg_configure_cmake)
         list(APPEND _csc_OPTIONS "-DCMAKE_SYSTEM_NAME=${VCPKG_CMAKE_SYSTEM_NAME}")
         if(_TARGETTING_UWP AND NOT DEFINED VCPKG_CMAKE_SYSTEM_VERSION)
             set(VCPKG_CMAKE_SYSTEM_VERSION 10.0)
+        elseif(VCPKG_CMAKE_SYSTEM_NAME STREQUAL "Android" AND NOT DEFINED VCPKG_CMAKE_SYSTEM_VERSION)
+            set(VCPKG_CMAKE_SYSTEM_VERSION 21)
         endif()
     endif()
 
@@ -208,6 +217,8 @@ function(vcpkg_configure_cmake)
             set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "${SCRIPTS}/toolchains/ios.cmake")
         elseif(VCPKG_CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
             set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "${SCRIPTS}/toolchains/freebsd.cmake")
+        elseif(VCPKG_CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
+            set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "${SCRIPTS}/toolchains/openbsd.cmake")
         elseif(VCPKG_CMAKE_SYSTEM_NAME STREQUAL "MinGW")
             set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "${SCRIPTS}/toolchains/mingw.cmake")
         endif()
@@ -305,7 +316,7 @@ function(vcpkg_configure_cmake)
         vcpkg_execute_required_process(
             COMMAND ninja -v
             WORKING_DIRECTORY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel/vcpkg-parallel-configure
-            LOGNAME config-${TARGET_TRIPLET}
+            LOGNAME ${_csc_LOGNAME}
         )
     else()
         if(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "debug")
@@ -314,7 +325,7 @@ function(vcpkg_configure_cmake)
             vcpkg_execute_required_process(
                 COMMAND ${dbg_command}
                 WORKING_DIRECTORY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg
-                LOGNAME config-${TARGET_TRIPLET}-dbg
+                LOGNAME ${_csc_LOGNAME}-dbg
             )
         endif()
 
@@ -324,7 +335,7 @@ function(vcpkg_configure_cmake)
             vcpkg_execute_required_process(
                 COMMAND ${rel_command}
                 WORKING_DIRECTORY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel
-                LOGNAME config-${TARGET_TRIPLET}-rel
+                LOGNAME ${_csc_LOGNAME}-rel
             )
         endif()
     endif()

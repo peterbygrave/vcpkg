@@ -33,9 +33,16 @@
 include(vcpkg_execute_in_download_mode)
 
 function(vcpkg_apply_patches)
-    cmake_parse_arguments(_ap "QUIET" "SOURCE_PATH" "PATCHES" ${ARGN})
+    # parse parameters such that semicolons in options arguments to COMMAND don't get erased
+    cmake_parse_arguments(PARSE_ARGV 0 _ap "QUIET" "SOURCE_PATH" "PATCHES")
 
     find_program(GIT NAMES git git.cmd)
+    if(DEFINED ENV{GIT_CONFIG_NOSYSTEM})
+        set(GIT_CONFIG_NOSYSTEM_BACKUP "$ENV{GIT_CONFIG_NOSYSTEM}")
+    else()
+        unset(GIT_CONFIG_NOSYSTEM_BACKUP)
+    endif()
+    set(ENV{GIT_CONFIG_NOSYSTEM} 1)
     set(PATCHNUM 0)
     foreach(PATCH ${_ap_PATCHES})
         get_filename_component(ABSOLUTE_PATCH "${PATCH}" ABSOLUTE BASE_DIR "${CURRENT_PORT_DIR}")
@@ -56,4 +63,9 @@ function(vcpkg_apply_patches)
 
         math(EXPR PATCHNUM "${PATCHNUM}+1")
     endforeach()
+    if(DEFINED GIT_CONFIG_NOSYSTEM_BACKUP)
+        set(ENV{GIT_CONFIG_NOSYSTEM} "${GIT_CONFIG_NOSYSTEM_BACKUP}")
+    else()
+        unset(ENV{GIT_CONFIG_NOSYSTEM})
+    endif()
 endfunction()

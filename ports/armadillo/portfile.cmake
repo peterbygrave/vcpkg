@@ -4,13 +4,13 @@ vcpkg_from_gitlab(
     GITLAB_URL https://gitlab.com
     OUT_SOURCE_PATH SOURCE_PATH
     REPO conradsnicta/armadillo-code
-    REF e41727b98c4211e125cd623074b76c6c7f7c03f4 
-    SHA512 95759fe724a7388abcf42a75f6c531766f95173b38476fdc3cd7959b92a525d6f15ba40e84e743d79ccd4c808f7474291302464d79076b8801d2d4876b70035c
-    HEAD_REF 9.900.x
-#    PATCHES
-#        remove_custom_modules.patch
-#        fix-CMakePath.patch
-#        add-disable-find-package.patch
+    REF 24b4762cbfbd3ad14c99a4854acd3560559a3195    #v 10.1.0
+    SHA512 224a875d21168f80e00604185ef72cb559a86a350a037c9cd1660a6f4dcc68f2ebf6dbc073f234a3cb03d35d959adb44ec49af88b11e3aaca9e0017c9c3fcee6
+    HEAD_REF 10.1.x
+    PATCHES
+        remove_custom_modules.patch
+        fix-CMakePath.patch
+        add-disable-find-package.patch
 )
 
 file(REMOVE ${SOURCE_PATH}/cmake_aux/Modules/ARMA_FindBLAS.cmake)
